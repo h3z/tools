@@ -1,0 +1,75 @@
+#
+# Server Inventory File
+#
+# Uncomment and change the IP addresses in this file to match your environment
+# Define per-group or per-host configuration in group_vars/*.yml
+
+######
+# ALL NODES
+# NOTE: Use existing hostnames here, DeepOps will configure server hostnames to match these values
+######
+[all]
+manage-server-01    ansible_host=10.1.80.30     ansible_user=ubuntu    ansible_password=9Y6JFoi9k8pE    ansible_sudo_password=9Y6JFoi9k8pE
+manage-server-02    ansible_host=10.1.80.130    ansible_user=ubuntu    ansible_password=MBUEEsun9K32    ansible_sudo_password=MBUEEsun9K32
+manage-server-03    ansible_host=10.1.80.230    ansible_user=ubuntu    ansible_password=giWptN1UHKVU    ansible_sudo_password=giWptN1UHKVU
+#sdgx-server-01      ansible_host=10.1.35.101    ansible_user=aicity    ansible_password=aicity123    ansible_sudo_password=aicity123
+sdgx-server-02      ansible_host=10.1.35.102    ansible_user=aicity    ansible_password=aicity123    ansible_sudo_password=aicity123
+sdgx-server-03      ansible_host=10.1.35.103    ansible_user=aicity    ansible_password=aicity123    ansible_sudo_password=aicity123
+sdgx-server-04      ansible_host=10.1.35.104    ansible_user=aicity    ansible_password=aicity123    ansible_sudo_password=aicity123
+sdgx-server-05      ansible_host=10.1.35.105    ansible_user=aicity    ansible_password=aicity123    ansible_sudo_password=aicity123
+sdgx-server-06      ansible_host=10.1.35.106    ansible_user=aicity    ansible_password=aicity123    ansible_sudo_password=aicity123
+sdgx-server-07      ansible_host=10.1.35.107    ansible_user=aicity    ansible_password=aicity123     ansible_sudo_password=aicity123
+sdgx-server-08      ansible_host=10.1.35.108    ansible_user=aicity    ansible_password=aicity123     ansible_sudo_password=aicity123
+
+######
+# KUBERNETES
+######
+[kube-master]
+manage-server-01
+manage-server-02
+manage-server-03
+
+# Odd number of nodes required
+[etcd]
+manage-server-01
+manage-server-02
+manage-server-03
+
+# Also add mgmt/master nodes here if they will run non-control plane jobs
+[kube-node]
+#sdgx-server-01
+sdgx-server-02
+sdgx-server-03
+sdgx-server-04
+sdgx-server-05
+sdgx-server-06
+sdgx-server-07
+sdgx-server-08
+
+[k8s-cluster:children]
+kube-master
+kube-node
+
+######
+# SLURM
+######
+[slurm-master]
+#login01
+
+[slurm-node]
+#gpu01
+#gpu02
+
+[slurm-cluster:children]
+slurm-master
+slurm-node
+
+######
+# SSH connection configuration
+######
+[all:vars]
+# SSH User
+#ansible_user=ubuntu
+ansible_ssh_private_key_file='~/.ssh/id_remote'
+# SSH bastion/jumpbox
+#ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q ubuntu@10.0.0.1"'

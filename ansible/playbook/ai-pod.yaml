@@ -1,0 +1,71 @@
+- hosts: dgx
+  tasks:
+    # - name: 'cp frp'
+    #   copy:
+    #     src: ./files/frp_0.39.0_linux_amd64
+    #     dest: /frp
+
+    # - name: 'ohmyzsh 1: apt mirrors'
+    #   shell: |
+    #     sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+    #     sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+
+    # - name: 'ohmyzsh 2: apt dependencies'
+    #   apt:
+    #     name:
+    #       - git-core
+    #       - zsh
+    #       - cron
+    #       - python3-pip
+    #       - bmon
+    #     state: present
+    #     update_cache: yes
+
+    - name: 'ohmyzsh 3: cp ohmyzsh'
+      copy:
+        src: ./files/ohmyzsh-master.zip
+        dest: /ohmyzsh-master.zip
+
+    - name: 'ohmyzsh 4: install script file'
+      copy:
+        src: ./files/install_ohmyzsh.sh
+        dest: /install_ohmyzsh.sh
+        mode: 777
+
+
+    - name: 'ohmyzsh 5: unzip and install ohmyzsh'
+      shell: |
+        unzip -o /ohmyzsh-master.zip -d /
+        mv /ohmyzsh-master ~/.oh-my-zsh
+        /install_ohmyzsh.sh
+
+    - name: 'ohmyzsh 6: autojump'
+      copy:
+        src: ./files/autojump
+        dest: /
+
+
+    # - name: 'start frp'
+    #   shell: |
+    #     chmod +x /frp/frp_0.39.0_linux_amd64/frpc
+    #     nohup /frp/frp_0.39.0_linux_amd64/frpc -c /frp/frp_0.39.0_linux_amd64/frpc.ini &
+
+    # - name: 'pip mirror'
+    #   shell: |
+    #     pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+    - name: 'PATH'
+      shell: |
+        echo 'export PATH=$PATH:/opt/conda/bin' >> ~/.zshrc
+
+
+    # - name: 'jupyter for colab'
+    #   shell: |
+    #     pip install jupyter_http_over_ws
+    #     /opt/conda/bin/jupyter serverextension enable --py jupyter_http_over_ws
+    #     nohup /opt/conda/bin/jupyter notebook --no-browser \
+    #       --NotebookApp.allow_origin='https://colab.research.google.com' \
+    #       --port=8333 \
+    #       --ip=0.0.0.0 \
+    #       --NotebookApp.token='' --NotebookApp.password='' \
+    #       --NotebookApp.disable_check_xsrf=True &
